@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+
+
+<html>
+
+
+
+
+
+
+
+<head>
+
+
+
+<meta charset="UTF-8">
+
+
+
+</head>
+
+
+
+
+
+
+
+<body>
+
+
+
+
+
+
+
+<style> .block1 {
+
+
+
+color: #0000ff;
+
+
+
+/*display: block;*/
+
+
+
+font-family: 宋体：SimSun font-size: 1.41667em;
+
+
+
+font-weight: bold;
+
+
+
+line-height: 1.2;
+
+
+
+margin-bottom: 0.67em;
+
+
+
+margin-left: 0;
+
+
+
+margin-right: 0;
+
+
+
+margin-top: 24pt;
+
+
+
+/* page-break-inside: avoid;*/
+
+
+
+}
+
+
+
+.calibre {
+
+
+
+color: #4F81BD;
+
+
+
+display: block;
+
+
+
+font-family: "細明體", sans-serif;
+
+
+
+font-size: 1em;
+
+
+
+margin-bottom: 0;
+
+
+
+margin-left: 5pt;
+
+
+
+margin-right: 5pt;
+
+
+
+margin-top: 0;
+
+
+
+padding-left: 0;
+
+
+
+padding-right: 0
+
+
+
+}
+
+
+
+.block2 {
+
+
+
+color: black;
+
+
+
+display: block;
+
+
+
+font-family: "細明體", sans-serif;
+
+
+
+margin-bottom: 3pt;
+
+
+
+margin-left: 0;
+
+
+
+margin-right: 0;
+
+
+
+margin-top: 3pt;
+
+
+
+padding-bottom: 0;
+
+
+
+padding-left: 0;
+
+
+
+padding-right: 0;
+
+
+
+padding-top: 0;
+
+
+
+text-align: justify
+
+
+
+}
+
+
+
+</style>
+
+
+
+
+
+
+
+
+<h1 class="block2">Symplectic Reading Seminar</h1>
+
+
+
+  <p>This weekly online seminar is joint-organized by ShanghaiTech University, USTC-IGP, Yonsei University, and Zhejiang University.  See also our 
+    <a href="seminar.html">joint symplectic seminar</a>. </p></p>
+
+
+
+    This reading seminar aims to study various interesting topics and machinery in symplectic geometry. The topic in this semester (Spring 2023) is the virtual techniques, in particular, 
+    the global Kuranishi charts based on the work from <a href="https://arxiv.org/abs/2110.14320">Abouzaid-McLean-Smith</a>.
+    Here is a rough <underline><a href="ReadingSeminarPlan.pdf">plan</a></underline> of the reading seminar.  
+    We will post the <underline><a href="">notes and recorded videos</a></underline>. </p></p>
+    
+    This reading seminar series expects to expand in its size in the future, hoping to include more students/postdocs to get involved.  
+    The tentative topic for the next semester (2023 Fall) will be "Symplectic dynamics on surfaces" led by Jun Zhang.  You are encouraged to email us to propose future topics
+    that could be of interests to a larger group of young symplectic geometers or if you want to lead such a seminar in a future semester.
+    
+
+</p>
+
+
+
+  
+
+
+
+  <p> Organizing committee: Hansol Hong, Junwu Tu, Weiwei Wu, Jun Zhang. </p>
+
+
+
+  <p> Zoom ID: 964 2625 0176 &emsp; Password: 255767 </p>
+
+
+
+  <p> Zoom link: https://yonsei.zoom.us/j/96426250176?pwd=VlJCRjB1T1ZnVGE2bC81NzUrZXloQT09 </p>
+
+
+
+  <h2>Talks</h2>
+
+  <p> Weiwei Wu (Zhejiang University)&emsp;&emsp;Time: March 15/22/29th, 2023 at 9:30am (Beijing time)</p>
+
+<p> Topic: Definition of Kuranishi structures and smoothing theory.</p>
+  
+<p>-----------------------------</p>
+  
+    <p> Hansol Hong (Yonsei University)&emsp;&emsp;Time: TBA at 9:30am (Beijing time)</p>
+
+<p> Topic: Constructions of virtual fundamental cycles in coefficient Q in a global Kuranishi chart.</p>
+  
+  <p>-----------------------------</p>
+  
+    <p> Zhengyi Zhou (Chinese Academy of Science)&emsp;&emsp;Time: TBA, at 9:30am (Beijing time)</p>
+
+<p> Topic: Moduli space of rational curves.</p>
+  
+    <p>-----------------------------</p>
+  
+    <p> Jun Zhang (USTC)&emsp;&emsp;Time: TBA, at 9:30am (Beijing time)</p>
+
+<p> Topic: Global Kuranishi charts of rational curves with marked points. </p>
+  
+    <p>-----------------------------</p>
+  
+ Further topics will be determined as our progress becomes more clear.
+  
+  
+  
+
+
+</body>
+</html>
