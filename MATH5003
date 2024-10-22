@@ -199,71 +199,65 @@ text-align: justify
 
 
 
-  <p>This weekly online seminar is joint-organized by ShanghaiTech University, USTC-IGP, Yonsei University, and Zhejiang University.  See also our 
-    <a href="seminar.html">joint symplectic seminar</a>. </p></p>
+  <p>This is a graduate-level introduction to differential manifolds (mainly on smooth manifolds).  </p></p>
 
 
-
-    This reading seminar aims to study various interesting topics and machinery in symplectic geometry. The topic in this semester (Spring 2023) is the virtual techniques, in particular, 
-    the global Kuranishi charts based on the work from <a href="https://arxiv.org/abs/2110.14320">Abouzaid-McLean-Smith</a>.
-    Here is a rough <underline><a href="ReadingSeminarPlan.pdf">plan</a></underline> of the reading seminar.  
-    We will post the <underline><a href="">notes and recorded videos</a></underline>. </p></p>
-    
-    This reading seminar series expects to expand in its size in the future, hoping to include more students/postdocs to get involved.  
-    The tentative topic for the next semester (2023 Fall) will be "Symplectic dynamics on surfaces" led by Jun Zhang.  You are encouraged to email us to propose future topics
-    that could be of interests to a larger group of young symplectic geometers or if you want to lead such a seminar in a future semester.
-    
-
-</p>
+  <p> Teaching assistants: 何玟辛，李进钊. </p>
 
 
-
-  
-
+  <p> Final Score = 30% Homework + 30% Middle-term Exam + 30% Final Exam. </p>
 
 
-  <p> Organizing committee: Hansol Hong, Junwu Tu, Weiwei Wu, Jun Zhang. </p>
+  <h2>Classes</h2>
 
+  <p> September 23, 2024, notes. </p>
 
-
-  <p> Zoom ID: 964 2625 0176 &emsp; Password: 255767 </p>
-
-
-
-  <p> Zoom link: https://yonsei.zoom.us/j/96426250176?pwd=VlJCRjB1T1ZnVGE2bC81NzUrZXloQT09 </p>
-
-
-
-  <h2>Talks</h2>
-
-  <p> Weiwei Wu (Zhejiang University)&emsp;&emsp;Time: March 15/22/29th, 2023 at 9:30am (Beijing time)</p>
-
-<p> Topic: Definition of Kuranishi structures and smoothing theory.</p>
+<p> Introduction to this course, definition of manifold, Basic examples of manifolds.  </p>
   
 <p>-----------------------------</p>
   
-    <p> Hansol Hong (Yonsei University)&emsp;&emsp;Time: TBA at 9:30am (Beijing time)</p>
+    <p> September 24, 2024, notes.</p>
 
-<p> Topic: Constructions of virtual fundamental cycles in coefficient Q in a global Kuranishi chart.</p>
+<p> Construct manifolds: product, open subset, quotient, basic examples of Lie groups. </p>
   
   <p>-----------------------------</p>
   
-    <p> Zhengyi Zhou (Chinese Academy of Science)&emsp;&emsp;Time: TBA, at 9:30am (Beijing time)</p>
+    <p> September 29, 2024, notes.</p>
 
-<p> Topic: Moduli space of rational curves.</p>
+<p> Group action (by Lie groups), reduction (example: Grassmannian), definition of vector bundle (example: Mobius bundle).   </p>
   
     <p>-----------------------------</p>
   
-    <p> Jun Zhang (USTC)&emsp;&emsp;Time: TBA, at 9:30am (Beijing time)</p>
+    <p> September 30, 2024, notes.</p>
 
-<p> Topic: Global Kuranishi charts of rational curves with marked points. </p>
+<p> Construct vector bundles (example: tangent bundle, cotangent bundle), sections (example: vector fields), Poincare-Hopf theorem, directional derivative (of a function on a manifold), definition of connection.  </p>
   
     <p>-----------------------------</p>
   
- Further topics will be determined as our progress becomes more clear.
+<p> October 8, 2024, notes.</p>
+
+<p> Connection, Bracket (of vector fields), tensor (of vector spaces), universal property.  </p>
   
+    <p>-----------------------------</p>
+
+<p> October 14, 2024, notes.</p>
+
+<p> Tensor algebra, tensor bundle, tensor field (example: metric tensors), non-example of tensor fields (connection, bracket), Sym vs. Alt, wedge algebra (definition + basis).   </p>
   
+    <p>-----------------------------</p>
+
+<p> October 15, 2024, notes.</p>
+
+<p> Wedge product, Hodge star operation, wedge bundle, k-form (as sections of the wedge-k bundle), exterior derivative (formula), dd = 0, interior multiplication. </p>
   
+    <p>-----------------------------</p>
+
+<p> October 21, 2024, notes.</p>
+
+<p> Examples in calculs of dd =0 (grad, curl, div), Maxwell's equation (formulation via forms), definition of flowlines, examples of flowline (2-torus sitting in \R^3, constructing symplectic matrices).   </p>
+  
+    <p>-----------------------------</p>
+
 
 
 </body>
