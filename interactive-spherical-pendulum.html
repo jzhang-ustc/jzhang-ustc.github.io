@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>Spherical pendulum · Interactive movie</title>
+<style>
+:root{color-scheme:light dark;--background:#fafbf9;--foreground:#212f31;--card:#fff;--muted-foreground:#546766;--border:#d3dcd8;--input:#aebbb6;--primary:#223e3c;--primary-foreground:#fff;--blue:#13796f;--viz-series-1:#08766e;--ring:#00776b;--font-size-base:16px;}
+@media(prefers-color-scheme:dark){:root{--background:#182120;--foreground:#e6eeeb;--card:#202c2a;--muted-foreground:#adc0b9;--border:#455653;--input:#6b7f79;--primary:#deeee6;--primary-foreground:#162724;--blue:#62d5c4;--viz-series-1:#60cfbd;--ring:#6cd7c9;}}
+*{box-sizing:border-box}body{margin:0;background:var(--background);color:var(--foreground);font:400 16px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}main{max-width:1100px;margin:clamp(20px,5vw,68px) auto;padding-inline:clamp(14px,3.8vw,50px)}h2,h3,p{margin:0}h2{font-family:Georgia,serif;font-weight:400;font-size:clamp(26px,3.5vw,38px);letter-spacing:-.028em}h3{font-size:16px;font-weight:500}.text-small{font-size:13px}.text-muted{color:var(--muted-foreground)}.tabular-nums{font-variant-numeric:tabular-nums}.form-label{font-weight:500}.btn,.form-control{font:inherit;color:var(--foreground);background:var(--card);border:1px solid var(--input);border-radius:7px}.btn{min-height:38px;padding:5px 15px;cursor:pointer}.btn:hover{border-color:var(--foreground)}.btn-primary{color:var(--primary-foreground);background:var(--primary);border-color:var(--primary)}.btn-ghost{background:transparent;border-color:transparent}.form-control{padding:5px 9px;min-height:36px}.form-range{width:100%;height:20px;display:block;margin:7px 0 0;accent-color:var(--primary);cursor:pointer}.sr-only{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}button:focus-visible,input:focus-visible{outline:2px solid var(--ring);outline-offset:2px}@media(pointer:coarse){.btn,.form-control{min-height:44px}.form-range{height:36px}}
+</style></head><body><main>
+<div id="pendulum-explorer">
+  <div class="sp-heading"><h2>Spherical pendulum</h2><span class="text-small text-muted">m = L = g = 1</span></div>
+  <div class="sp-settings">
+    <div class="sp-energy-block">
+      <div class="sp-input-heading">
+        <label class="form-label" for="sp-energy">Energy <i>E</i></label>
+        <input id="sp-energy" class="form-control tabular-nums" type="number" step="any" min="-1" max="1.5" value="-0.96093" inputmode="decimal" aria-describedby="sp-energy-note">
+      </div>
+      <input id="sp-slider" class="form-range" type="range" min="0" max="10000" step="1" value="1250" aria-label="Energy, fine adjustment near the hanging equilibrium">
+      <div class="sp-range-labels text-small text-muted"><span>−1</span><span>+1.5</span></div>
+    </div>
+    <div class="sp-movie-controls">
+      <button type="button" class="btn btn-primary" id="sp-play">Pause</button>
+      <button type="button" class="btn" id="sp-restart">Restart</button>
+    </div>
+  </div>
+  <div class="sp-views">
+    <section><div class="sp-heading"><h3>Motion of the bob</h3><span class="text-small text-muted tabular-nums" id="sp-time">t = 0.0</span></div>
+      <canvas id="sp-stage" role="img" aria-label="Oblique view of the rod and bob with the bob's three-dimensional path.">An animated spherical pendulum and its trajectory.</canvas>
+    </section>
+    <section><div class="sp-heading"><h3>Trajectory from above</h3></div>
+      <canvas id="sp-plan" role="img" aria-label="Overhead projection of the bob's trajectory in horizontal coordinates, with its present position marked.">A top view of the path traced by the bob.</canvas>
+    </section>
+  </div>
+  <div class="sp-trace-controls"><span class="text-small text-muted sp-trace-label"><span class="sp-swatch" aria-hidden="true"></span>Bob’s path since the last restart or clear</span><button type="button" class="btn btn-ghost" id="sp-clear">Clear trace</button></div>
+  <p class="text-small text-muted" id="sp-energy-note">Changing energy starts a new swing with a corresponding initial tilt and sideways speed.</p>
+  <span class="sr-only" aria-live="polite" id="sp-announce"></span>
+</div>
+<style>
+#pendulum-explorer{container-type:inline-size;color:var(--foreground);--sp-trace:var(--viz-series-1,var(--blue));}
+#pendulum-explorer .sp-heading,#pendulum-explorer .sp-input-heading,#pendulum-explorer .sp-range-labels,#pendulum-explorer .sp-trace-controls{display:flex;align-items:center;justify-content:space-between;gap:.7rem;}
+#pendulum-explorer>.sp-heading{justify-content:flex-start;gap:1rem;}
+#pendulum-explorer .sp-settings{display:flex;gap:2.6rem;align-items:center;margin:1rem 0 .9rem;}
+#pendulum-explorer .sp-energy-block{min-width:0;flex:1;}
+#pendulum-explorer .sp-input-heading{justify-content:flex-start;gap:.7rem;}
+#pendulum-explorer #sp-energy{max-width:8rem;}
+#pendulum-explorer .sp-movie-controls{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;}
+#pendulum-explorer .sp-views{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(0,1fr);gap:1.25rem;}
+#pendulum-explorer .sp-views section{min-width:0;}
+#pendulum-explorer .sp-views .sp-heading{min-height:1.65rem;margin-bottom:.35rem;}
+#pendulum-explorer canvas{display:block;width:100%;height:clamp(238px,32cqw,330px);}
+#pendulum-explorer .sp-trace-controls{margin:.55rem 0 .4rem;gap:.5rem;}
+#pendulum-explorer .sp-trace-label{display:inline-flex;gap:.55rem;align-items:center;}
+#pendulum-explorer .sp-swatch{width:1.45rem;height:2px;background:var(--sp-trace);}
+@container(max-width:545px){
+ #pendulum-explorer .sp-views{grid-template-columns:minmax(0,1fr);gap:.85rem;}
+ #pendulum-explorer .sp-settings{gap:.8rem;flex-wrap:wrap;}
+ #pendulum-explorer .sp-energy-block{min-width:13rem;}
+ #pendulum-explorer #sp-stage{height:clamp(205px,66cqw,290px);}
+ #pendulum-explorer #sp-plan{height:clamp(185px,58cqw,242px);}
+}
+</style>
+
+<script>
+(()=>{
+const initialEnergy = -Math.cos(Math.PI / 12) + 0.005;
+const launchScale = (Math.PI / 12) / Math.sqrt(initialEnergy + 1);
+const fixedStep = 1 / 240;
+function initialState(energy) {
+  const aboveMinimum = energy + 1;
+  const theta = launchScale * Math.sqrt(aboveMinimum);
+  const raised = 2 * Math.sin(theta / 2) ** 2;
+  return [Math.sin(theta), 0, -Math.cos(theta), 0, Math.sqrt(Math.max(0, 2 * (aboveMinimum - raised))), 0];
+}
+function derivative(s) {
+  const [x,y,z,vx,vy,vz] = s;
+  const a = z - vx*vx - vy*vy - vz*vz;
+  return [vx,vy,vz,a*x,a*y,a*z-1];
+}
+function advanceState(s, h) {
+  const k1 = derivative(s);
+  const k2 = derivative(s.map((v,i)=>v+h*.5*k1[i]));
+  const k3 = derivative(s.map((v,i)=>v+h*.5*k2[i]));
+  const k4 = derivative(s.map((v,i)=>v+h*k3[i]));
+  for (let i=0;i<6;i++) s[i]+=h*(k1[i]+2*k2[i]+2*k3[i]+k4[i])/6;
+  const length = Math.hypot(s[0],s[1],s[2]);
+  for(let i=0;i<3;i++) s[i]/=length;
+  const radial = s[0]*s[3]+s[1]*s[4]+s[2]*s[5];
+  for(let i=0;i<3;i++) s[i+3]-=radial*s[i];
+}
+
+// Accumulate the path in physical coordinates. Both views retain the entire run
+// at a bounded memory cost and can be resized without discarding earlier turns.
+function makePathRecorder(project) {
+  const buffer=document.createElement('canvas'), size=1200, ctx=buffer.getContext('2d');
+  buffer.width=buffer.height=size;
+  let extent=1, last=null, color='black';
+  function reset(q,span) {
+    extent=span; ctx.clearRect(0,0,size,size);last=q.slice(0,3);
+    ctx.lineWidth=4.8;ctx.lineCap='round';ctx.lineJoin='round';
+  }
+  function add(q){
+    if(!last){last=q.slice(0,3);return;}
+    const a=project(last),b=project(q),k=size/(2*extent);
+    ctx.strokeStyle=color;ctx.beginPath();
+    ctx.moveTo(size/2+a[0]*k,size/2+a[1]*k);ctx.lineTo(size/2+b[0]*k,size/2+b[1]*k);
+    ctx.stroke();last=q.slice(0,3);
+  }
+  function draw(c,originX,originY,scale,ink){
+    if(ink!==color){
+      color=ink;
+      ctx.save();ctx.globalCompositeOperation='source-in';ctx.fillStyle=color;
+      ctx.fillRect(0,0,size,size);ctx.restore();
+    }
+    const radius=extent*scale;
+    c.drawImage(buffer,originX-radius,originY-radius,2*radius,2*radius);
+  }
+  return {reset,add,draw};
+}
+
+function makePendulumStage(canvas) {
+  const ctx = canvas.getContext('2d');
+  const back = document.createElement('canvas');
+  const sample = document.createElement('canvas');
+  sample.width = sample.height = 1;
+  const sampler = sample.getContext('2d', {willReadFrequently: true});
+  let geometry = null, cacheKey = '';
+  const clamp = (t, low, high) => Math.max(low, Math.min(high, t));
+  const mix = (a,b,t) => a.map((c,i) => Math.round(c + (b[i]-c)*t));
+  const paint = (c, a=1) => 'rgba('+c.join(',')+','+a+')';
+  const dot = (a,b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
+  const scale = (v,s) => [v[0]*s,v[1]*s,v[2]*s];
+  function getColor(value, fallback) {
+    if (!value) return fallback;
+    sampler.clearRect(0, 0, 1, 1);
+    sampler.fillStyle = 'transparent';
+    sampler.fillStyle = value;
+    sampler.fillRect(0, 0, 1, 1);
+    const p = sampler.getImageData(0, 0, 1, 1).data;
+    return p[3] > 64 ? [p[0],p[1],p[2]] : fallback;
+  }
+  function circle(c, p, r, color) {
+    c.fillStyle=color; c.beginPath(); c.arc(p.x,p.y,r,0,2*Math.PI); c.fill();
+  }
+  function path(c, pts, color, w) {
+    if (!pts.length) return;
+    c.beginPath(); c.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<pts.length;i++) c.lineTo(pts[i].x,pts[i].y);
+    c.strokeStyle=color; c.lineWidth=w; c.stroke();
+  }
+  function beam(c, a, b, radius, colors, project, unit) {
+    const p=project(a),q=project(b),dx=q.x-p.x,dy=q.y-p.y;
+    const len=Math.hypot(dx,dy),r=Math.max(.7,radius*unit*(p.k+q.k)/2);
+    if(len < .2) { circle(c,p,r,paint(colors[2]));return; }
+    const nx=-dy/len,ny=dx/len;
+    const band=c.createLinearGradient(p.x-nx*r,p.y-ny*r,p.x+nx*r,p.y+ny*r);
+    if (nx*-.7 + ny*-.6 < 0) colors=colors.slice().reverse();
+    [0,.18,.40,.66,1].forEach((stop,i)=>band.addColorStop(stop,paint(colors[i])));
+    c.lineCap='round'; path(c,[p,q],band,2*r);
+  }
+  function cuboid(c, a, b, colors, project) {
+    const points=Array.from({length:8},(_,i)=>project([
+      i&1?b[0]:a[0], i&2?b[1]:a[1], i&4?b[2]:a[2]
+    ]));
+    // The viewer is on the positive x, y, and z sides of the stand.
+    for(const [indices,color] of [
+      [[1,3,7,5],colors[1]],[[2,3,7,6],colors[0]],[[4,5,7,6],colors[2]]
+    ]) {
+      c.beginPath(); indices.forEach((i,j)=>j ? c.lineTo(points[i].x,points[i].y) : c.moveTo(points[i].x,points[i].y));
+      c.closePath();c.fillStyle=paint(color);c.fill();c.lineWidth=.48;c.strokeStyle=paint(color);c.stroke();
+    }
+  }
+  function softSpot(c, p, xRadius, yRadius, color) {
+    c.save();c.translate(p.x,p.y);c.scale(Math.max(xRadius,.1),Math.max(yRadius,.1));
+    const g=c.createRadialGradient(0,0,0,0,0,1);g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=g;c.beginPath();c.arc(0,0,1,0,2*Math.PI);c.fill();c.restore();
+  }
+  const az=.18,elev=.30,ca=Math.cos(az),sa=Math.sin(az),ce=Math.cos(elev),se=Math.sin(elev);
+  function raw(v) {
+    const horiz=v[0]*sa+v[1]*ca, depth=horiz*ce+v[2]*se,k=7/(7-depth);
+    return {x:(ca*v[0]-sa*v[1])*k,y:-(ce*v[2]-se*horiz)*k,k};
+  }
+  const history=makePathRecorder(v=>{const p=raw(v);return [p.x,p.y];});
+  function build(w,h,dpr,energy,colors) {
+    back.width=canvas.width=Math.round(w*dpr);back.height=canvas.height=Math.round(h*dpr);
+    const c=back.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);
+    const foreground=getColor(colors.fg,[32,48,52]);
+    const background=getColor(colors.background,foreground[0]>160?[27,32,35]:[252,252,249]);
+    const dark=dot(background,[.213,.715,.072])<110;
+    const bright=[251,250,235], ink=[18,30,32];
+    const body=dark?[91,116,120]:[53,75,78],steel=dark?[144,163,167]:[107,126,129];
+    const metal=[mix(steel,ink,.47),mix(steel,ink,.13),mix(steel,bright,.55),steel,mix(steel,ink,.4)];
+    const frame=[body,mix(body,ink,.38),mix(body,bright,.14)];
+    const floor=-1.18,roof=.21+clamp(energy+.06,0,1)*.92;
+    // Frame the plinth and the full family of trajectories allowed by the selected energy.
+    const emax=clamp(energy,-1,1), ext=emax<0 ? Math.sqrt(Math.max(0,1-emax*emax)):1;
+    const reference=[[-1.30,-.75,floor],[-1.30,-.13,roof],[-1.30,-.75,roof],[.08,-.60,roof],[.08,.12,roof],[-.7,-.06,floor]];
+    for(let i=0;i<24;i++){
+      const k=i*Math.PI/12;reference.push([ext*Math.cos(k),ext*Math.sin(k),emax],[.25*Math.cos(k),.25*Math.sin(k),-1]);
+      if(emax>=0)reference.push([Math.cos(k),Math.sin(k),0]);
+    }
+    reference.push([0,0,-1.16]);
+    const outline=reference.map(raw);
+    const xmin=Math.min(...outline.map(p=>p.x))-.13,xmax=Math.max(...outline.map(p=>p.x))+.18;
+    const ymin=Math.min(...outline.map(p=>p.y))-.11,ymax=Math.max(...outline.map(p=>p.y))+.10;
+    const unit=Math.min((w-12)/(xmax-xmin),(h-14)/(ymax-ymin));
+    const ox=(w-unit*(xmin+xmax))/2,oy=(h-unit*(ymin+ymax))/2;
+    function project(v){const p=raw(v);return {x:ox+unit*p.x,y:oy+unit*p.y,k:p.k};}
+    const top=mix(background,dark?[125,144,145]:[224,232,227],dark?.05:.26);
+    const bottom=mix(background,dark?[131,132,117]:[217,219,205],dark?.09:.42);
+    const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,paint(top));g.addColorStop(.7,paint(mix(top,bottom,.48)));g.addColorStop(1,paint(bottom));
+    c.fillStyle=g;c.fillRect(0,0,w,h);
+    softSpot(c,project([-.89,-.50,floor]),unit*.71,unit*.11,paint(ink,dark?.42:.22));
+    cuboid(c,[-1.30,-.75,floor],[-.77,-.11,floor+.08],frame,project);
+    cuboid(c,[-1.10,-.55,floor+.08],[-.99,-.44,roof],frame,project);
+    cuboid(c,[-1.11,-.56,roof-.085],[.062,-.43,roof+.012],frame,project);
+    cuboid(c,[-.05,-.44,roof-.085],[.062,.052,roof+.012],frame,project);
+    beam(c,[0,0,.046],[0,0,roof-.04],.023,metal,project,unit);
+    beam(c,[0,0,roof-.11],[0,0,roof-.06],.039,[frame[1],frame[0],frame[2],frame[0],frame[1]],project,unit);
+    [[-1.045,-.432,roof-.04],[-1.045,-.435,floor+.13]].forEach(v=>{
+      const p=project(v);circle(c,p,unit*.014,paint(metal[1]));circle(c,{x:p.x-.4,y:p.y-.5},unit*.008,paint(metal[2]));
+    });
+    const hinge=project([0,0,0]);
+    const cap=c.createRadialGradient(hinge.x-.019*unit,hinge.y-.020*unit,0,hinge.x,hinge.y,.057*unit);
+    cap.addColorStop(0,paint(metal[2]));cap.addColorStop(.68,paint(body));cap.addColorStop(1,paint(frame[1]));
+    circle(c,hinge,.060*unit,cap);
+    return {w,h,dpr,unit,ox,oy,project,hinge,metal,ink,body,frame,dark,
+      trail:getColor(colors.accent,dark?[109,207,193]:[16,123,113])};
+  }
+  return { resetHistory(q){history.reset(q,1.18);}, addSample(q){history.add(q);}, draw(q,trails,colors,energy=-.961) {
+    if(!q || !colors) return;
+    const rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height;
+    if(w<2 || h<2)return;
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    const key=[w,h,dpr,energy,colors.fg,colors.background,colors.accent].join('|');
+    if(key!==cacheKey){geometry=build(w,h,dpr,energy,colors);cacheKey=key;}
+    const {unit,project,hinge,metal,ink,body,trail,dark}=geometry;
+    ctx.setTransform(dpr,0,0,dpr,0,0);ctx.drawImage(back,0,0,w,h);
+    const qp=project(q),height=q[2]+1.18;
+    const shadow=project([q[0]+.16*height,q[1]-.20*height,-1.18]);
+    softSpot(ctx,shadow,unit*(.11+.12*height),unit*(.035+.046*height),paint(ink,(dark?.48:.23)/(1+height)));
+    ctx.save();ctx.globalAlpha=.70;history.draw(ctx,geometry.ox,geometry.oy,unit,paint(trail));ctx.restore();
+    if(trails && trails.length>1){
+      const points=[],stride=Math.max(1,Math.ceil(trails.length/1750));
+      for(let i=0;i<trails.length;i+=stride)points.push(project(trails[i]));
+      points.push(project(trails[trails.length-1]),qp);
+      ctx.lineCap='round';ctx.lineJoin='round';
+      path(ctx,points,paint(trail,.72),Math.max(1.25,unit*.012));
+      path(ctx,points.slice(Math.max(0,points.length-45)),paint(trail,.96),Math.max(1.55,unit*.015));
+    }
+    beam(ctx,[0,0,0],scale(q,.94),.012,metal,project,unit);
+    beam(ctx,scale(q,.875),scale(q,.957),.023,metal,project,unit);
+    const r=unit*.093*qp.k;
+    const gold=ctx.createRadialGradient(qp.x-.32*r,qp.y-.43*r,.025*r,qp.x+.08*r,qp.y+.16*r,1.18*r);
+    [[0,'#fff2b3'],[.18,'#eab86b'],[.39,'#b57b33'],[.66,'#97632b'],[.81,'#79461e'],[.94,'#6e441e'],[1,'#a67a44']].forEach(s=>gold.addColorStop(s[0],s[1]));
+    circle(ctx,qp,r,gold);
+    ctx.save();ctx.translate(qp.x-.38*r,qp.y-.38*r);ctx.rotate(.58);
+    const shine=ctx.createRadialGradient(0,0,.01,0,0,1);shine.addColorStop(0,'rgba(255,246,206,.88)');shine.addColorStop(.56,'rgba(255,239,184,.65)');shine.addColorStop(1,'rgba(255,239,184,0)');
+    ctx.scale(.16*r,.36*r);ctx.fillStyle=shine;ctx.beginPath();ctx.arc(0,0,1,0,2*Math.PI);ctx.fill();ctx.restore();
+    if(Math.hypot(qp.x-hinge.x,qp.y-hinge.y)>r+.013*unit||qp.k<1){
+      circle(ctx,hinge,.044*unit,paint(metal[2]));circle(ctx,hinge,.035*unit,paint(body));circle(ctx,hinge,.018*unit,paint(ink));
+    }
+  }};
+}
+
+const root=document.getElementById('pendulum-explorer');
+if(!root || root.dataset.initialized) return;
+root.dataset.initialized='true';
+const get=id=>root.querySelector('#sp-'+id);
+const number=get('energy'), slider=get('slider'), toggle=get('play'), time=get('time');
+const plan=get('plan'), planCtx=plan.getContext('2d');
+const stage=makePendulumStage(get('stage'));
+const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let energy=initialEnergy, state, stepCount=0, accumulator=0, lastRAF=null, trace=[];
+const planHistory=makePathRecorder(v=>[v[0],-v[1]]);
+function planExtent(){
+  const physicalRadius=energy<0?Math.sqrt(Math.max(0,(1-energy)*(1+energy))):1;
+  return [.01,.025,.05,.075,.1,.15,.2,.3,.4,.5,.75,1].find(v=>v+1e-12>=physicalRadius)||1;
+}
+function clearHistory(){
+  trace=[state.slice(0,3)];
+  planHistory.reset(state,planExtent()*1.045);
+  stage.resetHistory(state);
+}
+let running=!reduceMotion.matches, palette;
+const sampleSteps=8, sampleLimit=120;
+function colorFrom(property,fallback) {
+  const sample=document.createElement('span');
+  sample.style.color='var('+property+', '+fallback+')';
+  root.appendChild(sample);
+  const color=getComputedStyle(sample).color;
+  sample.remove();
+  return color;
+}
+function refreshColors(){
+  palette={fg:colorFrom('--foreground','CanvasText'),muted:colorFrom('--muted-foreground','GrayText'),
+    line:colorFrom('--border','GrayText'),background:colorFrom('--background','Canvas'),accent:colorFrom('--sp-trace','Highlight')};
+}
+function asField(E){return String(Number(E.toFixed(5)));}
+function clean(n){return Math.abs(n)<1e-9?'0':String(Number(n.toFixed(3))).replace('-','−');}
+function putEnergy(){
+  number.value=asField(energy);
+  slider.value=String(Math.round(10000*Math.sqrt((energy+1)/2.5)));
+  slider.setAttribute('aria-valuetext',asField(energy));
+}
+function fresh(E) {
+  energy=E;state=initialState(E);stepCount=0;accumulator=0;lastRAF=null;
+  clearHistory();putEnergy();
+}
+function tick(){
+  advanceState(state,fixedStep);stepCount++;
+  if(stepCount%sampleSteps===0 && energy>-1){
+    planHistory.add(state);stage.addSample(state);trace.push(state.slice(0,3));
+    if(trace.length>sampleLimit)trace.shift();
+  }
+}
+function topView(points){
+  const ctx=planCtx, bounds=plan.getBoundingClientRect(), w=bounds.width, h=bounds.height;
+  if(!w||!h)return;
+  const dpr=Math.min(devicePixelRatio||1,2),pw=Math.round(w*dpr),ph=Math.round(h*dpr);
+  if(plan.width!==pw||plan.height!==ph){plan.width=pw;plan.height=ph;}
+  ctx.setTransform(pw/w,0,0,ph/h,0,0);
+  ctx.clearRect(0,0,w,h);
+  const extent=planExtent();
+  const radius=Math.min((w-82)/2,(h-51)/2);
+  if(radius<12)return;
+  const cx=w/2+2,cy=h/2+1;
+  const X=x=>cx+x*radius/extent,Y=y=>cy-y*radius/extent;
+  ctx.lineWidth=1;ctx.strokeStyle=palette.line;
+  for(const r of [radius*.5,radius]){
+    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  }
+  ctx.beginPath();ctx.moveTo(cx-radius-5,cy);ctx.lineTo(cx+radius+5,cy);
+  ctx.moveTo(cx,cy-radius-5);ctx.lineTo(cx,cy+radius+5);ctx.stroke();
+  ctx.font='12px Arial, sans-serif';ctx.fillStyle=palette.muted;ctx.textAlign='center';
+  ctx.fillText(clean(-extent),cx-radius,cy+16);ctx.fillText(clean(extent),cx+radius,cy+16);
+  ctx.fillText('x',cx+radius+18,cy+4);ctx.fillText('y',cx,cy-radius-11);
+  ctx.save();ctx.globalAlpha=.68;planHistory.draw(ctx,cx,cy,radius/extent,palette.accent);ctx.restore();
+  ctx.strokeStyle=palette.accent;ctx.lineWidth=1.6;ctx.lineJoin='round';ctx.lineCap='round';
+  ctx.beginPath();points.forEach((p,i)=>{if(i===0)ctx.moveTo(X(p[0]),Y(p[1]));else ctx.lineTo(X(p[0]),Y(p[1]));});ctx.stroke();
+  const end=points[points.length-1];ctx.fillStyle=palette.accent;ctx.beginPath();ctx.arc(X(end[0]),Y(end[1]),4.3,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle=palette.background;ctx.lineWidth=1.5;ctx.stroke();
+}
+function paint(){
+  if(!palette)refreshColors();
+  const q=state.slice(0,3), points=trace.concat([q]);
+  stage.draw(q,points,palette,energy);
+  topView(points);
+  const value='t = '+(stepCount*fixedStep).toFixed(1);
+  if(time.textContent!==value)time.textContent=value;
+}
+function buttons(){toggle.textContent=running?'Pause':'Play';}
+function save(){
+  const host=window.openai;
+  if(typeof host?.setWidgetState==='function'){
+    const result=host.setWidgetState({modelContent:{energy},privateContent:{playing:running}});
+    if(result?.catch)result.catch(()=>{});
+  }
+}
+function announce(message){get('announce').textContent=message;}
+function change(E){
+  if(!Number.isFinite(E)||E < -1||E > 1.5)return false;
+  if(Math.abs(energy-E)>1e-11){fresh(E);paint();announce('New energy '+asField(E)+'. Swing and trace restarted.');save();}
+  return true;
+}
+function readNumber(){
+  if(number.value.trim()===''||!change(number.valueAsNumber)){putEnergy();return;}
+  putEnergy();
+}
+number.addEventListener('change',readNumber);
+number.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();readNumber();}});
+slider.addEventListener('input',()=>change(-1+2.5*(Number(slider.value)/10000)**2));
+toggle.addEventListener('click',()=>{running=!running;lastRAF=null;accumulator=0;buttons();save();announce(running?'Playing.':'Paused.');});
+get('restart').addEventListener('click',()=>{fresh(energy);paint();announce('Restarted from the launch point.');});
+get('clear').addEventListener('click',()=>{clearHistory();paint();announce('Trajectory cleared.');});
+function receive(saved){
+  if(!saved)return;
+  const E=saved.modelContent?.energy;
+  if(Number.isFinite(E)&&E>=-1&&E<=1.5&&Math.abs(E-energy)>1e-10)fresh(E);
+  if(typeof saved.privateContent?.playing==='boolean')running=saved.privateContent.playing;
+  buttons();lastRAF=null;paint();
+}
+fresh(initialEnergy);
+// A full, already simulated low-energy swing makes the orbit visible on opening.
+for(let i=0;i<1515;i++)tick();
+refreshColors();buttons();
+receive(window.openai?.widgetState);
+window.addEventListener('openai:set_globals',e=>receive(e.detail?.globals?.widgetState));
+const resize=new ResizeObserver(()=>paint());
+resize.observe(root);resize.observe(plan);
+const theme=new MutationObserver(()=>{refreshColors();paint();});
+theme.observe(document.documentElement,{attributes:true,attributeFilter:['class','style','data-theme']});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{refreshColors();paint();});
+document.addEventListener('visibilitychange',()=>{lastRAF=null;accumulator=0;});
+function frame(now){
+  if(!root.isConnected){resize.disconnect();theme.disconnect();return;}
+  if(running && !document.hidden){
+    if(lastRAF!==null) accumulator+=Math.min((now-lastRAF)/1000,.10);
+    let moved=false;
+    while(accumulator>=fixedStep){tick();accumulator-=fixedStep;moved=true;}
+    if(moved)paint();
+    lastRAF=now;
+  } else lastRAF=null;
+  requestAnimationFrame(frame);
+}
+paint();requestAnimationFrame(frame);
+
+})();
+</script>
+</main></body></html>
